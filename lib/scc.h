@@ -7,11 +7,21 @@
 
 #include<cstdio>
 #include<algorithm>
-#include<string.h>
+#include<cstring>
 #include "header.h"
 using namespace std;
 
 namespace scc{
+    struct vertex{
+        int DFN;
+        int LOW;
+        bool visited= false;
+    };
+    vector<vertex> vertexes;
+    vector<vector<int>> edges;
+    vector<int> new_stack;
+    int time=0;
+
     struct node {
         int v,next;
     }edge[1001];
@@ -23,7 +33,34 @@ namespace scc{
         edge[++cnt].next=heads[x];
         edge[cnt].v = y;
         heads[x]=cnt;
-        return ;
+    }
+    void tarjan2(int vid){
+        time++;
+        vertexes[vid].DFN=vertexes[vid].LOW=time;
+        vertexes[vid].visited=true;
+        new_stack.push_back(vid);
+
+        for(int i=edges[vid].size()-1;i>=0;i--){
+            int childvid=edges[vid][i];
+            if(!vertexes[childvid].DFN){//如果没访问过
+                tarjan2(childvid);
+                vertexes[vid].LOW=min(vertexes[vid].LOW,vertexes[childvid].LOW);
+            } else if(vertexes[childvid].visited){//如果访问过，并且还在栈里。
+                vertexes[vid].LOW=min(vertexes[vid].LOW,vertexes[childvid].DFN);
+            }
+        }
+        if(vertexes[vid].LOW==vertexes[vid].DFN){
+            while(true){
+                int stack_top=new_stack.back();
+                printf("%d ",stack_top+1);
+                vertexes[stack_top].visited=false;
+                new_stack.pop_back();
+                if(stack_top==vid){
+                    printf("\n");
+                    break;
+                }
+            }
+        }
     }
     void tarjan(int x)//代表第几个点在处理。递归的是点。
     {
@@ -68,10 +105,14 @@ namespace scc{
         memset(heads,-1,sizeof(heads));
         int n,m;//n nodes and m edges
         cin>>n>>m;
+        vertexes.resize(n);
+        edges.resize(n);
+
         int x,y;
         for(int i=0;i<m;i++)
         {
             cin>>x>>y;
+            edges[x-1].push_back(y-1);
             add(x,y);
         }
         for(int i=0;i<10;i++)
@@ -84,8 +125,13 @@ namespace scc{
             printf("heads[%d]%d\n",i,heads[i]);
         }
 
-        for(int i=1;i<=n;i++)
-            if(!DFN[i])  tarjan(i);//当这个点没有访问过，就从此点开始。防止图没走完
+        for(int i=1;i<=n;i++) {
+            if (!DFN[i]) tarjan(i);//当这个点没有访问过，就从此点开始。防止图没走完
+        }
+        printf("output of new algorithm\n");
+        for(int i=0;i<vertexes.size();i++){
+            if(!vertexes[i].DFN) tarjan2(i);
+        }
         return 0;
     }
 }
