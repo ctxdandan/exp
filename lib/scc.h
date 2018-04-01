@@ -14,36 +14,36 @@ using namespace std;
 
 namespace scc {
     struct vertex {
-        int DFN;
-        int LOW;
-        bool visited = false;
+        int dfn=0;
+        int low=0;
+        bool inStack = false;
     };
     vector<vertex> vertexes;
     vector<vector<int>> edges;
-    vector<int> new_stack;
+    vector<int> stack;
     int time = 0;
 
-    void tarjan2(int vid) {
+    void tarjan(int vid) {
         time++;
-        vertexes[vid].DFN = vertexes[vid].LOW = time;
-        vertexes[vid].visited = true;
-        new_stack.push_back(vid);
+        vertexes[vid].dfn = vertexes[vid].low = time;
+        vertexes[vid].inStack = true;
+        stack.push_back(vid);
 
         for (int i = edges[vid].size() - 1; i >= 0; i--) {
             int childvid = edges[vid][i];
-            if (!vertexes[childvid].DFN) {//如果没访问过
-                tarjan2(childvid);
-                vertexes[vid].LOW = min(vertexes[vid].LOW, vertexes[childvid].LOW);
-            } else if (vertexes[childvid].visited) {//如果访问过，并且还在栈里。
-                vertexes[vid].LOW = min(vertexes[vid].LOW, vertexes[childvid].DFN);
+            if (!vertexes[childvid].dfn) {
+                tarjan(childvid);
+                vertexes[vid].low = min(vertexes[vid].low, vertexes[childvid].low);
+            } else if (vertexes[childvid].inStack) {
+                vertexes[vid].low = min(vertexes[vid].low, vertexes[childvid].dfn);
             }
         }
-        if (vertexes[vid].LOW == vertexes[vid].DFN) {
+        if (vertexes[vid].low == vertexes[vid].dfn) {
             while (true) {
-                int stack_top = new_stack.back();
+                int stack_top = stack.back();
                 printf("%d ", stack_top + 1);
-                vertexes[stack_top].visited = false;
-                new_stack.pop_back();
+                vertexes[stack_top].inStack = false;
+                stack.pop_back();
                 if (stack_top == vid) {
                     printf("\n");
                     break;
@@ -53,7 +53,7 @@ namespace scc {
     }
 
     int test() {
-        ifstream fin("C:\\Users\\Admin\\CLionProjects\\exp\\data\\tarjan_test");
+        ifstream fin("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tarjan_test");
         if (!fin.is_open()) {
             cerr << "file not found" << endl;
             exit(1);
@@ -72,7 +72,7 @@ namespace scc {
 
 
         for (int i = 0; i < vertexes.size(); i++) {
-            if (!vertexes[i].DFN) tarjan2(i);
+            if (!vertexes[i].dfn) tarjan(i);
         }
         return 0;
     }
