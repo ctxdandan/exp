@@ -5,9 +5,6 @@
 #ifndef EXP_SCC_H
 #define EXP_SCC_H
 
-#include<cstdio>
-#include<algorithm>
-#include<cstring>
 #include "header.h"
 
 using namespace std;
@@ -77,48 +74,6 @@ namespace scc {
         for (int i = 0; i < vertexes.size(); i++) {
             if (!vertexes[i].dfn) tarjan(i);
         }
-
-        //assign new vid
-        int vid = 0;
-        map<int, int> nid;
-        for (int i = 0; i < vertexes.size(); i++) {
-            if (nid.find(vertexes[i].low) == nid.end()) {
-                nid[vertexes[i].low] = vid++;
-            }
-        }
-        int nn = nid.size(), nm=0;
-        //reconstruct DAG
-        map<int, set<int>> graph;
-        for (from = 0; from < edges.size(); ++from) {
-            for (to = 0; to < edges[from].size(); ++to) {
-
-                int srcid = nid[vertexes[from].low];
-                int dstid = nid[vertexes[edges[from][to]].low];
-                if(srcid==dstid)continue;
-                graph[srcid].insert(dstid);
-            }
-        }
-        log("reconstruct DAG finished.")
-        for (map<int, set<int>>::iterator src = graph.begin(); src != graph.end(); ++src) {
-//                if(src->second.size()>100){
-            log("before:nm:%d size:%d",nm,src->second.size());
-            nm+=src->second.size();
-            log("after:nm:%d size:%d",nm,src->second.size());
-//                }else
-//                    nm+=src->second.size();
-            for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
-            }
-        }
-
-        log("Anaylysis Finished. There are %d conponents, and the new graph has %d edges.",nn,nm);
-        //output DAG
-        for (map<int, set<int>>::iterator src = graph.begin(); src != graph.end(); ++src) {
-            for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
-                printf("%d %d\n", src->first, *dst);
-            }
-        }
-
-
     }
 
     void convert_twitter2DAG() {
@@ -163,7 +118,7 @@ namespace scc {
                 nid[vertexes[i].low] = vid++;
             }
         }
-        int nn = nid.size(), nm=0;
+        int nn = nid.size(), nm = 0;
         //reconstruct DAG
         map<int, set<int>> graph;
         for (from = 0; from < edges.size(); ++from) {
@@ -171,30 +126,30 @@ namespace scc {
 
                 int srcid = nid[vertexes[from].low];
                 int dstid = nid[vertexes[edges[from][to]].low];
-                if(srcid==dstid)continue;
+                if (srcid == dstid)continue;
                 graph[srcid].insert(dstid);
             }
         }
         log("reconstruct DAG finished.")
         for (map<int, set<int>>::iterator src = graph.begin(); src != graph.end(); ++src) {
-            nm+=src->second.size();
+            nm += src->second.size();
             for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
 
             }
         }
 
-        log("Anaylysis Finished. There are %d conponents, and the new graph has %d edges.",nn,nm);
+        log("Anaylysis Finished. There are %d conponents, and the new graph has %d edges.", nn, nm);
         //output DAG
         log("starting writing to file......")
         ofstream ofs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG");
         if (ofs) {
-            ofs<<nn<<" "<<nm<<endl;
+            ofs << nn << " " << nm << endl;
             for (map<int, set<int>>::iterator src = graph.begin(); src != graph.end(); ++src) {
                 for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
-                    ofs<<src->first<<" "<<*dst<<endl;
+                    ofs << src->first << " " << *dst << endl;
                 }
             }
-        } else{
+        } else {
             log("file not opened!");
         }
         ofs.close();
