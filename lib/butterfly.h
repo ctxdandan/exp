@@ -62,10 +62,10 @@ namespace butterfly {
 
     }
 
-    void TOLIndexQuery() {
+    void TOLIndexQuery() {//6.15s
 //        fin.open("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tol1.dat");
 
-        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\tol\\data\\twitter_socialDAG_lvl_edgefmt");
+        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
         if (!ifs) {
             log("file not found.")
         }

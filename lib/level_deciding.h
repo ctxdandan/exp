@@ -98,12 +98,12 @@ namespace level_decide {
         ofs.close();
     }
 
-    void test() {
-        load_graph("C:\\Users\\Admin\\CLionProjects\\tol\\data\\twitter_socialDAG");
+    void test() {//5.55s
+        load_graph("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG");
         multi_degree();
         decide_lvl();
-        output_for_butterfly("C:\\Users\\Admin\\CLionProjects\\tol\\data\\twitter_socialDAG_lvl_edgefmt");
-//        output_for_dist("C:\\Users\\Admin\\CLionProjects\\tol\\data\\twitter_socialDAG_lvl_vertexfmt");
+        output_for_butterfly("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
+        output_for_dist("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_vertexfmt");
     }
 }
 
