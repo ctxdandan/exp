@@ -11,6 +11,11 @@ using namespace std;
 
 namespace scc {
     struct vertex {
+        vertex(){
+            dfn=0;
+            low=0;
+            inStack=false;
+        }
         int dfn = 0;
         int low = 0;
         bool inStack = false;
@@ -76,9 +81,9 @@ namespace scc {
         }
     }
 
-    void convert_twitter2DAG() {
+    void loadgraph1(){
         //twitter_social total have 38 sccs, which contain total 1810 vertexes, 47.6 vertexes per scc on average
-        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_social");
+        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\tol\\data\\twitter_social");
 //        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\tarjan_test");
         if (!ifs) {
             log("file not fount");
@@ -104,12 +109,37 @@ namespace scc {
             edges[from - 1].push_back(to - 1);
         }
         ifs.close();
+    }
 
+    void loadgraph2(){
+        FILE *fp=fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv","r");
+        if(fp==NULL){
+            log("file opened failed.");
+        }
+        int x,y;
+        int m=0,n=0;
+        while(fscanf(fp,"%d,%d\n",&x,&y)!=EOF){
+//            cout<<x<<","<<y<<endl;
+            m++;
+            if(m%1000000==0)
+                printf("%d\n",m);
+            n=max(n,max(x,y));
+            vertexes.resize(n);
+            edges.resize(n);
+            edges[x-1].push_back(y-1);
+        }
+        fclose(fp);
+        log("the graph has %d vertexes and %d edges.", n, m);
+    }
+
+    void convert_twitter2DAG() {
         for (int i = 0; i < vertexes.size(); i++) {
             if (!vertexes[i].dfn) tarjan(i);
         }
         log("tarjan Finished.")
+    }
 
+    void dumpgraph1(){
         //assign new vid
         int vid = 0;
         map<int, int> nid;
@@ -121,8 +151,8 @@ namespace scc {
         int nn = nid.size(), nm = 0;
         //reconstruct DAG
         map<int, set<int>> graph;
-        for (from = 0; from < edges.size(); ++from) {
-            for (to = 0; to < edges[from].size(); ++to) {
+        for (int from = 0; from < edges.size(); ++from) {
+            for (int to = 0; to < edges[from].size(); ++to) {
 
                 int srcid = nid[vertexes[from].low];
                 int dstid = nid[vertexes[edges[from][to]].low];
@@ -153,13 +183,62 @@ namespace scc {
             log("file not opened!");
         }
         ofs.close();
-        log("finish writing to file.")
+        log("finish writing to file.");
+    }
 
+    void dumpgraph2(){
+        //assign new vid
+        int vid = 0;
+        map<int, int> nid;
+        for (int i = 0; i < vertexes.size(); i++) {
+            if (nid.find(vertexes[i].low) == nid.end()) {
+                nid[vertexes[i].low] = vid++;
+            }
+        }
+        int nn = nid.size(), nm = 0;
+        //reconstruct DAG
+        map<int, set<int>> graph;
+        for (int from = 0; from < edges.size(); ++from) {
+            for (int to = 0; to < edges[from].size(); ++to) {
 
+                int srcid = nid[vertexes[from].low];
+                int dstid = nid[vertexes[edges[from][to]].low];
+                if (srcid == dstid)continue;
+                graph[srcid].insert(dstid);
+            }
+        }
+        log("reconstruct DAG finished.")
+        for (map<int, set<int>>::iterator src = graph.begin(); src != graph.end(); ++src) {
+            nm += src->second.size();
+            for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
+
+            }
+        }
+
+        log("Anaylysis Finished. There are %d conponents, and the new graph has %d edges.", nn, nm);
+        //output DAG
+        log("starting writing to file......")
+        ofstream ofs("D:\\Dataset\\Twitter-dataset\\data\\edges_DAG.csv");
+        if (ofs) {
+            ofs << nn << " " << nm << endl;
+            for (map<int, set<int>>::iterator src = graph.begin(); src != graph.end(); ++src) {
+                for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
+                    ofs << src->first << " " << *dst << endl;
+                }
+            }
+        } else {
+            log("file not opened!");
+        }
+        ofs.close();
+        log("finish writing to file.");
     }
 
     int test() {
+        loadgraph2();
+//        loadgraph1();
         convert_twitter2DAG();
+//        dumpgraph1();
+        dumpgraph2();
 //        example1();
         return 0;
     }
