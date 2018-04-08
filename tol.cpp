@@ -1,14 +1,10 @@
 #include "lib/butterfly.h"
 #include "lib/scc.h"
 #include "lib/level_deciding.h"
+#include "lib/DataConversion.h"
 using namespace std;
 
-double get_current_time()
-{
-    timeval t;
-    gettimeofday(&t, 0);
-    return (double)t.tv_sec + (double)t.tv_usec / 1000000;
-}
+
 
 void sstreamtest(){
     istringstream iss("I'm a c++ lover.");
@@ -20,12 +16,22 @@ void sstreamtest(){
     }
     cout<<oss.str()<<endl;
     printf("%s cstr",oss.str().c_str());
+}
 
-
+void vectorallomemtest(){
+    printf("before\n");
+    vector<int> bytes;
+//    bytes.resize(40000000000u);
+    bytes.resize(250000000);
+    printf("size of the data: %u\n",bytes.size());
+    sleep(10);
+    printf("after\n");
 }
 
 int main() {
     double start_time=get_current_time();
+//    dataconversion::convertchartobinarydata();
+//    vectorallomemtest();
     scc::test();
 //    butterfly::TOLIndexQuery();
 //    level_decide::test();

@@ -11,15 +11,17 @@ using namespace std;
 
 namespace scc {
     struct vertex {
-        vertex(){
-            dfn=0;
-            low=0;
-            inStack=false;
+        vertex() {
+            dfn = 0;
+            low = 0;
+            inStack = false;
         }
+
         int dfn = 0;
         int low = 0;
         bool inStack = false;
     };
+
     vector<vertex> vertexes;
     vector<vector<int>> edges;
     vector<int> stack;
@@ -81,7 +83,7 @@ namespace scc {
         }
     }
 
-    void loadgraph1(){
+    void loadgraph1() {
         //twitter_social total have 38 sccs, which contain total 1810 vertexes, 47.6 vertexes per scc on average
         ifstream ifs("C:\\Users\\Admin\\CLionProjects\\tol\\data\\twitter_social");
 //        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\tarjan_test");
@@ -111,23 +113,29 @@ namespace scc {
         ifs.close();
     }
 
-    void loadgraph2(){
-        FILE *fp=fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv","r");
-        if(fp==NULL){
+    void loadgraph2() {
+
+        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv.bin", "r");
+        if (fp == NULL) {
             log("file opened failed.");
         }
-        int x,y;
-        int m=0,n=0;
-        while(fscanf(fp,"%d,%d\n",&x,&y)!=EOF){
-//            cout<<x<<","<<y<<endl;
+        int x[2];
+        size_t count = fread(x, sizeof(int), 2, fp);
+        int m = 0, n = 0;
+        while (fread(x, sizeof(int), 2, fp) == 2) {
+            cout << x[0] << "," << x[1] << endl;
             m++;
-            if(m%1000000==0)
-                printf("%d\n",m);
-            n=max(n,max(x,y));
-            vertexes.resize(n);
-            edges.resize(n);
-            edges[x-1].push_back(y-1);
+            if (m % 1000000 == 0)
+                printf("%d\n", m);
+            if (max(x[0], x[1]) > n) {
+                n = max(x[0], x[1]);
+                edges.resize(n);
+            }
+            edges[x[0] - 1].push_back(x[1] - 1);
         }
+        if (ferror(fp)) log ("Error Writing to myfile.txt\n");//end of the file reached? bug!!!
+        if (feof(fp)) log ("End-of-File reached.");
+        vertexes.resize(n);
         fclose(fp);
         log("the graph has %d vertexes and %d edges.", n, m);
     }
@@ -139,7 +147,7 @@ namespace scc {
         log("tarjan Finished.")
     }
 
-    void dumpgraph1(){
+    void dumpgraph1() {
         //assign new vid
         int vid = 0;
         map<int, int> nid;
@@ -186,7 +194,7 @@ namespace scc {
         log("finish writing to file.");
     }
 
-    void dumpgraph2(){
+    void dumpgraph2() {
         //assign new vid
         int vid = 0;
         map<int, int> nid;
@@ -236,9 +244,9 @@ namespace scc {
     int test() {
         loadgraph2();
 //        loadgraph1();
-        convert_twitter2DAG();
+//        convert_twitter2DAG();
 //        dumpgraph1();
-        dumpgraph2();
+//        dumpgraph2();
 //        example1();
         return 0;
     }
