@@ -22,7 +22,9 @@ namespace dataconversion {
 #else
         int *data = new int[CAPACITY];
 #endif
-        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv", "r");
+//        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv", "r");
+        FILE *fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv", "r");
+
         if (fp == NULL) {
             log("file opened failed.");
         }
@@ -41,7 +43,7 @@ namespace dataconversion {
 
         log("load data consumed %f seconds.", endtime - starttime);
 
-        for(int i=0;i<10;i++){
+        for(int i=0;i<130;i++){
             printf("%d,%d\n",data[i],data[i+1]);
             i++;
         }
@@ -50,7 +52,8 @@ namespace dataconversion {
 
 
         starttime = get_current_time();
-        fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv.bin", "w");
+//        fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv.bin", "w");
+        fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv.bin", "wb");
         if (fp == NULL) {
             log("file opened failed.");
         }
@@ -59,7 +62,9 @@ namespace dataconversion {
 #else
         fwrite(data, sizeof(int), size, fp);
 #endif
-        fclose(fp);
+        if(fclose(fp)==EOF){
+            log("close file failed\n");
+        }
         endtime = get_current_time();
         log("dump data consumed %f seconds.", endtime - starttime);
 

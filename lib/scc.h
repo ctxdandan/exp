@@ -115,24 +115,29 @@ namespace scc {
 
     void loadgraph2() {
 
-        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv.bin", "r");
+        FILE *fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv.bin", "rb");
         if (fp == NULL) {
             log("file opened failed.");
         }
-        int x[2];
-        size_t count = fread(x, sizeof(int), 2, fp);
+//        int buffsize=100000000;
+        int buffsize=2;
+        int * x=new int[buffsize];
+        size_t count=0;
         int m = 0, n = 0;
-        while (fread(x, sizeof(int), 2, fp) == 2) {
-            cout << x[0] << "," << x[1] << endl;
-            m++;
-            if (m % 1000000 == 0)
-                printf("%d\n", m);
-            if (max(x[0], x[1]) > n) {
-                n = max(x[0], x[1]);
-                edges.resize(n);
+        while ((count=fread(x, sizeof(int), buffsize, fp)) >0) {
+            for(int i=0;i<count;i+=2){
+                m++;
+                if (m % 1000000 == 0)
+                    printf("%d\n", m);
+                if (max(x[i], x[i+1]) > n) {
+                    n = max(x[i], x[i+1]);
+                    edges.resize(n);
+                }
+                edges[x[i] - 1].push_back(x[i+1] - 1);
             }
-            edges[x[0] - 1].push_back(x[1] - 1);
+            if (feof(fp))log("count:%d",count);
         }
+        log("count:%d",count);
         if (ferror(fp)) log ("Error Writing to myfile.txt\n");//end of the file reached? bug!!!
         if (feof(fp)) log ("End-of-File reached.");
         vertexes.resize(n);
