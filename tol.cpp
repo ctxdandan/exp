@@ -18,6 +18,7 @@ void sstreamtest(){
     printf("%s cstr",oss.str().c_str());
 }
 
+
 void vectorallomemtest(){
     printf("before\n");
     vector<int> bytes;
@@ -27,14 +28,19 @@ void vectorallomemtest(){
     sleep(10);
     printf("after\n");
 }
-
+void tests(){
+    vector<size_t> a={1,2,3,4},b={5,6,7};
+    if(butterfly::intersection(8,a,8,b)){
+        log("not empty")
+    } else log("empty")
+}
 int main() {
     double start_time=get_current_time();
 //    dataconversion::convertchartobinarydata();
 //    scc::test();
 //    level_decide::test();
     butterfly::TOLIndexQuery();
-//    vectorallomemtest();
+//    tests();
     double end_time=get_current_time();
     log("start_time:%f s end_time:%f s duration:%f s",start_time,end_time,end_time-start_time);
     return 0;
