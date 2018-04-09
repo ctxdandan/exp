@@ -57,15 +57,17 @@ namespace butterfly {
         if (!ifs) {
             log("file not found.")
         }
-        int n,m;
-        ifs>>n>>m;
+        int n, m;
+        ifs >> n >> m;
 
     }
 
-    void TOLIndexQuery() {//6.15s
+    void TOLIndexQuery() {//4.55s
 //        fin.open("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tol1.dat");
 
         ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
+//        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
+
         if (!ifs) {
             log("file not found.")
         }
@@ -90,8 +92,10 @@ namespace butterfly {
             ifs >> l;
             level.add(i, l);
         }
-
+        double starttime = get_current_time();
         butterfly::init(G, rG, level, Lin, Lout);
+        double endtime = get_current_time();
+        log("butterfly consumed %f seconds.", endtime - starttime);
 
 //        for (size_t i = 0; i < N; ++i) {
 //

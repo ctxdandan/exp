@@ -31,10 +31,10 @@ void vectorallomemtest(){
 int main() {
     double start_time=get_current_time();
 //    dataconversion::convertchartobinarydata();
-//    vectorallomemtest();
-    scc::test();
-//    butterfly::TOLIndexQuery();
+//    scc::test();
 //    level_decide::test();
+    butterfly::TOLIndexQuery();
+//    vectorallomemtest();
     double end_time=get_current_time();
     log("start_time:%f s end_time:%f s duration:%f s",start_time,end_time,end_time-start_time);
     return 0;

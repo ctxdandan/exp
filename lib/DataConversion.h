@@ -18,12 +18,12 @@ namespace dataconversion {
         int CAPACITY = 250000000;
 #ifdef vec
         vector<int> data;
-        data.resize(250000000);
+        data.resize(CAPACITY);
 #else
         int *data = new int[CAPACITY];
 #endif
-//        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv", "r");
-        FILE *fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv", "r");
+        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv", "r");
+//        FILE *fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv", "r");
 
         if (fp == NULL) {
             log("file opened failed.");
@@ -43,17 +43,17 @@ namespace dataconversion {
 
         log("load data consumed %f seconds.", endtime - starttime);
 
-        for(int i=0;i<130;i++){
-            printf("%d,%d\n",data[i],data[i+1]);
-            i++;
-        }
+//        for(int i=0;i<130;i++){
+//            printf("%d,%d\n",data[i],data[i+1]);
+//            i++;
+//        }
 
         log("the size of data is %d*4\n",size);
 
 
         starttime = get_current_time();
-//        fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv.bin", "w");
-        fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv.bin", "wb");
+        fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges.csv.bin", "wb");
+//        fp = fopen("D:\\Dataset\\Twitter-dataset\\data\\edges.csv.bin", "wb");
         if (fp == NULL) {
             log("file opened failed.");
         }
