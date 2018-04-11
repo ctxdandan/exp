@@ -6,9 +6,6 @@
 #define EXP_BUTTERFLY_H
 
 #include "header.h"
-#include "graph.h"
-#include "label.h"
-#include "level.h"
 
 using namespace std;
 
@@ -38,6 +35,7 @@ namespace butterfly {
                 }
             }
         }
+        log("vertex visited by vid%d level%d:%d", src, v2l[src], visited.size());
     }
 
     size_t N, M;
@@ -47,21 +45,26 @@ namespace butterfly {
     vector<vector<size_t>> lout;
     vector<size_t> v2l;
     vector<size_t> l2v;
+    double cur_time = 0;
 
 
     void zjh_init() {
         for (size_t l = 0; l < l2v.size(); l++) {
-//            if(l%(l2v.size()/100)==0)
-            log("proceeding %d",l);
-            zjh_bfs_labeling(edges,l2v[l],v2l,lin,lout);
-            zjh_bfs_labeling(redges,l2v[l],v2l,lout,lin);
+            if (get_current_time() - cur_time > 1) {
+                log("start proceeding %d in time %f. outDegree:%d inDegree:%d", l, get_current_time(),
+                    edges[l2v[l]].size(), redges[l2v[l]].size());
+                cur_time = get_current_time();
+            }
+            zjh_bfs_labeling(edges, l2v[l], v2l, lin, lout);
+            zjh_bfs_labeling(redges, l2v[l], v2l, lout, lin);
         }
     }
+
     void TOLIndexQuery() {//4.55s
 //        fin.open("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tol1.dat");
-
 //        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
-        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
+//        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
+        ifstream ifs("edges_DAG_lvl_edgefmt");
 
         if (!ifs) {
             log("file not found.")
@@ -74,20 +77,12 @@ namespace butterfly {
         lin.resize(N);
         lout.resize(N);
 
-//        DiGraph<size_t, int> G(N), rG(N);
-//        Levels<size_t> level(N);
-//        Labels<size_t> Lin(N), Lout(N);
-
         for (size_t i = 0; i < M; ++i) {
-
             size_t u, v;
             ifs >> u >> v;
 
             edges[u].push_back(v);
             redges[v].push_back(u);
-
-//            G[u].emplace_back(v, 1);
-//            rG[v].emplace_back(u, 1);
         }
 
         for (size_t i = 0; i < N; ++i) {
@@ -95,27 +90,12 @@ namespace butterfly {
             ifs >> l;
             v2l[i] = l;
             l2v[l] = i;
-//            level.add(i, l);
         }
         double starttime = get_current_time();
-//        butterfly::init(G, rG, level, Lin, Lout);
         butterfly::zjh_init();
 
         double endtime = get_current_time();
         log("butterfly consumed %f seconds.", endtime - starttime);
-
-//        for (size_t i = 0; i < N; ++i) {
-//
-//            cout << char('a' + i) << "(" << level[i] << "):" << endl;
-//            cout << "  Lin : ";
-//            for (const auto e:  Lin[i]) cout << char('a' + e) << ", ";
-//            cout << endl;
-//            cout << "  Lout: ";
-//            for (const auto e: Lout[i]) cout << char('a' + e) << ", ";
-//            cout << endl;
-//        }
-
-
     }
 
 } // namespace butterfly

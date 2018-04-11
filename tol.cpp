@@ -1,7 +1,7 @@
 #include "lib/butterfly.h"
-#include "lib/scc.h"
-#include "lib/level_deciding.h"
-#include "lib/DataConversion.h"
+//#include "lib/scc.h"
+//#include "lib/level_deciding.h"
+//#include "lib/DataConversion.h"
 using namespace std;
 
 
