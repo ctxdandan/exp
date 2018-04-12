@@ -35,7 +35,7 @@ namespace butterfly {
                 }
             }
         }
-        log("vertex visited by vid%d level%d:%d", src, v2l[src], visited.size());
+//        log("vertex visited by vid%d level%d:%d", src, v2l[src], visited.size());
     }
 
     size_t N, M;
@@ -63,8 +63,8 @@ namespace butterfly {
     void TOLIndexQuery() {//4.55s
 //        fin.open("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tol1.dat");
 //        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
-//        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
-        ifstream ifs("edges_DAG_lvl_edgefmt");
+        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
+//        ifstream ifs("edges_DAG_lvl_edgefmt");
 
         if (!ifs) {
             log("file not found.")

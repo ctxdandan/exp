@@ -11,7 +11,7 @@
 namespace level_decide {
     int n, m;
     struct Vertex {
-        int degree_mul;
+        long long degree_mul;
         int level;
     };
     vector<vector<int>> graph;
@@ -66,19 +66,19 @@ namespace level_decide {
 
     void multi_degree() {
         for (int i = 0; i < n; i++) {
-            vertexes[i].degree_mul = graph[i].size() * rgraph[i].size();
+            vertexes[i].degree_mul = (long long)graph[i].size() * (long long)rgraph[i].size();
         }
     }
 
     void decide_lvl() {
         //construct reverse Index
-        map<int, set<int>> rindex;
+        map<long long, set<int>> rindex;
         for (int i = 0; i < n; i++) {
             rindex[vertexes[i].degree_mul].insert(i);
         }
 
         int level = 0;
-        for (map<int, set<int>>::reverse_iterator deg_mul = rindex.rbegin(); deg_mul != rindex.rend(); ++deg_mul) {
+        for (map<long long, set<int>>::reverse_iterator deg_mul = rindex.rbegin(); deg_mul != rindex.rend(); ++deg_mul) {
             for (set<int>::iterator vid = deg_mul->second.begin(); vid != deg_mul->second.end(); ++vid) {
                 vertexes[*vid].level = level;
                 level++;

@@ -1,6 +1,6 @@
 #include "lib/butterfly.h"
 //#include "lib/scc.h"
-//#include "lib/level_deciding.h"
+#include "lib/level_deciding.h"
 //#include "lib/DataConversion.h"
 using namespace std;
 
@@ -41,6 +41,12 @@ int main() {
 //    level_decide::test();
     butterfly::TOLIndexQuery();
 //    tests();
+
+//    long   a=1<<30,b=1<<30;
+//    long long   c=a*b;
+//    printf("%lld\n",c);
+//    log("size of long:%d size of int:%d size of long long:%d", sizeof(long), sizeof(int), sizeof(long long))
+
     double end_time=get_current_time();
     log("start_time:%f s end_time:%f s duration:%f s",start_time,end_time,end_time-start_time);
     return 0;
