@@ -14,27 +14,27 @@ namespace level_decide {
         long long degree_mul;
         int level;
     };
-    vector<vector<int>> graph;
-    vector<vector<int>> rgraph;
+    vector<vector<int> > graph;
+    vector<vector<int> > rgraph;
     vector<Vertex> vertexes;
 
 
     void load_graph(string path) {
-        ifstream ifs(path);
-        if (!ifs) {
-            log("file not found.");
-        }
-        ifs >> n >> m;
-        graph.resize(n);
-        rgraph.resize(n);
-        vertexes.resize(n);
-        int src, dst;
-        for (int i = 0; i < m; i++) {
-            ifs >> src >> dst;
-            graph[src].push_back(dst);
-            rgraph[dst].push_back(src);
-        }
-        ifs.close();
+//        ifstream ifs(path);
+//        if (!ifs) {
+//            log("file not found.");
+//        }
+//        ifs >> n >> m;
+//        graph.resize(n);
+//        rgraph.resize(n);
+//        vertexes.resize(n);
+//        int src, dst;
+//        for (int i = 0; i < m; i++) {
+//            ifs >> src >> dst;
+//            graph[src].push_back(dst);
+//            rgraph[dst].push_back(src);
+//        }
+//        ifs.close();
     }
 
     void load_graph2(string path) {
@@ -43,8 +43,10 @@ namespace level_decide {
             log("file not found.");
             return;
         }
-        fread(&n, sizeof(int), 1, fp);
-        fread(&m, sizeof(int), 1, fp);
+//        fread(&n, sizeof(int), 1, fp);
+//        fread(&m, sizeof(int), 1, fp);
+        n=12407621;
+        m=13857091;
 
         graph.resize(n);
         rgraph.resize(n);
@@ -113,11 +115,11 @@ namespace level_decide {
         for (int i = 0; i < vertexes.size(); i++) {
             ofs << i << "\t" << vertexes[i].level << " ";
             ofs << graph[i].size() << " ";
-            for (auto dst = graph[i].begin(); dst != graph[i].end(); ++dst) {
+            for (vector<int>::iterator dst = graph[i].begin(); dst != graph[i].end(); ++dst) {
                 ofs << *dst << " ";
             }
             ofs << rgraph[i].size() << " ";
-            for (auto src = rgraph[i].begin(); src != rgraph[i].end(); ++src) {
+            for (vector<int>::iterator src = rgraph[i].begin(); src != rgraph[i].end(); ++src) {
                 ofs << *src << " ";
             }
             ofs << endl;
@@ -128,13 +130,16 @@ namespace level_decide {
     void test() {//5.55s
 //        load_graph("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG");
         //DAG 7245617 vertexes and 7314324 Edges
-        load_graph2("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG.csv.bin");
+//        load_graph2("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG.csv.bin");
+        load_graph2("out.twitter_mpi_1.DAG.bin");
         multi_degree();
         decide_lvl();
 //        output_for_butterfly("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
 //        output_for_dist("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_vertexfmt");
-        output_for_butterfly("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
-        output_for_dist("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_vertexfmt");
+//        output_for_butterfly("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
+//        output_for_dist("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_vertexfmt");
+        output_for_butterfly("out.twitter_mpi_1.DAG.lvl.edgefmt");
+        output_for_dist("out.twitter_mpi_1.DAG.lvl.vertexfmt");
     }
 }
 
