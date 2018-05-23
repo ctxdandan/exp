@@ -1,5 +1,6 @@
 #include "lib/header.h"
 #include "lib/butterfly.h"
+#include "lib/DAGgenerator.h"
 //#include "lib/scc.h"
 //#include "lib/level_deciding.h"
 //#include "lib/DataConversion.h"
@@ -22,9 +23,10 @@ int main() {
 //    dataconversion::convertchartobinarydata();
 //    scc::test();
 //    level_decide::test();
-    butterfly::TOLIndexQuery();
-    butterfly::validation();
+//    butterfly::TOLIndexQuery();
+//    butterfly::validation();
 //    setdifftest();
+    daggenerator::test();
 
     double end_time = get_current_time();
     log("start_time:%f s end_time:%f s duration:%f s", start_time, end_time, end_time - start_time);

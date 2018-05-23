@@ -8,30 +8,31 @@
 #include "header.h"
 
 namespace daggenerator {
-    /**
-     * This fun generates DAG using the method introduced in paper:
-     *      Tf-label: a topological-folding labeling scheme for reachability querying in a large graph
-     * Overall Steps:
-     *      1. create n vertexes and distribute them to tl levels
-     *      2. for each vertex at level i(1<i<tl), add a edge from a vertex selected randomly from level i-1 to v
-     *      3. add edges from i to (tl-1) randomly selected vertexes at level j>i in G.
-     *
-     * @param n number of vertexes
-     * @param davg avg degree of vertexes
-     * @param tl total topological levels of this dag
-     * @return DAG
-     */
+
+    void outputDAG(vector<vector<size_t>> &graph) {
+        printf("GRAPH:\n");
+        for (size_t i = 0; i < graph.size(); ++i) {
+            printf("%d->[", i);
+            for (size_t j = 0; j < graph[i].size(); ++j) {
+                printf("%d,", graph[i][j]);
+            }
+            printf("]\n");
+        }
+    }
+
     typedef struct {
         size_t id;
 //        size_t tlevel;
         set<size_t> ou_neibs;
     } vertex;
     template<typename T1, typename T2>
-    typedef
-    struct {
+    struct tp2 {
         T1 e1;
         T2 e2;
-    } tuple2;
+    };
+
+    template<typename T1, typename T2>
+    using tuple2=tp2<T1, T2>;
 
     /**
      * algorithm to distribute n vertexes to tl levels,
@@ -44,7 +45,7 @@ namespace daggenerator {
      * @param tl
      * @return
      */
-    vector<vector<vertex>> void distribute_lvls(size_t n, size_t tl) {
+    vector<vector<vertex>> distribute_lvls(size_t n, size_t tl) {
         //first, assign level_size for each level
         vector<size_t> level_size(tl, 1);
         for (size_t total = tl; total < n; ++total) {
@@ -82,10 +83,34 @@ namespace daggenerator {
         return index;
     };
 
-    vector<vector<size_t>> void gen(size_t n, size_t davg, size_t tl) {
+
+    /**
+     * This fun generates DAG using the method introduced in paper:
+     *      Tf-label: a topological-folding labeling scheme for reachability querying in a large graph
+     * Overall Steps:
+     *      1. create n vertexes and distribute them to tl levels
+     *      2. for each vertex at level i(1<i<tl), add a edge from a vertex selected randomly from level i-1 to v
+     *      3. add edges from i to (tl-1) randomly selected vertexes at level j>i in G.
+     *
+     * @param n number of vertexes
+     * @param davg avg degree of vertexes
+     * @param tl total topological levels of this dag
+     * @return DAG
+     */
+    vector<vector<size_t>> gen(size_t n, size_t davg, size_t tl) {
         //step 1. create n vertex and distribute them across tl levels
         srand(0);
         vector<vector<vertex>> lvl_vertexes = distribute_lvls(n, tl);
+//        {//debug
+//            for(size_t i=0;i<lvl_vertexes.size();++i){
+//                printf("lvl:%d [",i);
+//                for(size_t j=0;j<lvl_vertexes[i].size();++j){
+//                    printf("%d,",lvl_vertexes[i][j].id);
+//                }
+//                printf("]\n");
+//            }
+//        }
+
         //construct index for simplicity of computation
         vector<tuple2<size_t, size_t>> index1 = level_idx(lvl_vertexes);
         vector<size_t> level_begin_idx(tl, 0);
@@ -107,8 +132,8 @@ namespace daggenerator {
             for (size_t i = 0; i < lvl_vertexes[tlevel].size(); ++i) {//for each v in this level
                 set<size_t> &ou_neibs = lvl_vertexes[tlevel][i].ou_neibs;
 
-                //add tl-1 fwd edges to this vertex
-                for (size_t j = 0; j < tl - 1; ++j) {//add tl-1 edges from v to lvl_vertexes with lower level.
+                //add davg-1 fwd edges to this vertex
+                for (size_t j = 0; j < davg - 1; ++j) {//add tl-1 edges from v to lvl_vertexes with lower level.
                     if (ou_neibs.size() == (n - level_begin_idx[tlevel + 1])) {
                         //the out_neighbor contains all lvl_vertexes with lower level, break;
                         break;
@@ -124,22 +149,27 @@ namespace daggenerator {
         }
 
 
-        vector<vector<size_t>> vertexes(n);
+        vector<vector<size_t>> graph(n);
         for (int i = 0; i < lvl_vertexes.size(); i++) {
             for (int j = 0; j < lvl_vertexes[i].size(); j++) {
                 vertex &v = lvl_vertexes[i][j];
-                vertexes[v.id].resize(v.ou_neibs.size());
+                graph[v.id].resize(v.ou_neibs.size());
 
 
                 vector<size_t>::iterator nb1;
                 set<size_t>::iterator nb2;
-                for (nb1 = vertexes[v.id].begin(), nb2 = v.ou_neibs.begin();
-                     nb1 != vertexes[v.id].end(), nb2 != v.ou_neibs.end(); (*nb1++) = (*nb2++));
+                for (nb1 = graph[v.id].begin(), nb2 = v.ou_neibs.begin();
+                     nb1 != graph[v.id].end(), nb2 != v.ou_neibs.end(); (*nb1++) = (*nb2++));
             }
         }
 
-        return vertexes;
+        return graph;
 
+    }
+
+    void test() {
+        vector<vector<size_t>> graph = gen(10, 2, 5);
+        outputDAG(graph);
     }
 }
 #endif //EXP_DAGGENERATOR_H
