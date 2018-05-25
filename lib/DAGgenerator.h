@@ -4,12 +4,16 @@
 
 #ifndef EXP_DAGGENERATOR_H
 #define EXP_DAGGENERATOR_H
+#include <set>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+using namespace std;
 
-#include "header.h"
 
 namespace daggenerator {
 
-    void outputDAG(vector<vector<size_t>> &graph) {
+    void outputDAG(vector<vector<size_t> > &graph) {
         printf("GRAPH:\n");
         for (size_t i = 0; i < graph.size(); ++i) {
             printf("%d->[", i);
@@ -61,7 +65,6 @@ namespace daggenerator {
             lvl_vertexes[tlevel].resize(lvl_vertexes[tlevel].size() + 1);
             lvl_vertexes[tlevel].back().id = vid;
         }
-
         return lvl_vertexes;
     }
 
@@ -81,7 +84,7 @@ namespace daggenerator {
             }
         }
         return index;
-    };
+    }
 
 
     /**

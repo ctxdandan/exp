@@ -172,7 +172,7 @@ namespace butterfly {
             sort(lin[i].begin(), lin[i].end());
             sort(in_label[i].begin(), in_label[i].end());
             if (!(lin[i].size() == in_label[i].size())) {
-                log("i:%d lin[i].size():%d in_label[i].size():%d", i, lin[i].size(), in_label[i].size());
+                printf("vid:%d lvl:%d lin[i].size():%d in_label[i].size():%d", i, v2l[i], lin[i].size(), in_label[i].size());
                 vector<size_t> &a = lin[i], &b = in_label[i];
                 vector<size_t> diff;
 
@@ -203,7 +203,7 @@ namespace butterfly {
             sort(lout[i].begin(), lout[i].end());
             sort(ou_label[i].begin(), ou_label[i].end());
             if (!(lout[i].size() == ou_label[i].size())) {
-                log("i:%d lout[i].size():%d ou_label[i].size():%d", i, lout[i].size(), ou_label[i].size());
+                printf("vid:%d lvl:%d lout[i].size():%d ou_label[i].size():%d", i, v2l[i], lout[i].size(), ou_label[i].size());
 
                 vector<size_t> &a = lout[i], &b = ou_label[i];
                 vector<size_t> diff;
