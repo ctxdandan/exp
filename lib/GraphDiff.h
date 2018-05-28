@@ -43,7 +43,13 @@ namespace graphdiff {
             log("file not found.")
         }
         string line;
+        log("start readline.N:%d",N);
+        fflush(stdout);
+        printf("maxlengh of string:%d\n", line.max_size());
+        printf("maxlength of vec:%d\n", edges.max_size());
         while (getline(ifs, line)) {
+//            cout<<line<<endl;
+            fflush(stdout);
             istringstream iss(line);
             size_t vid, level;
             iss >> vid >> level;
@@ -70,6 +76,7 @@ namespace graphdiff {
             }
 
         }
+        log("end readline.")
 
         ifs.close();
     }
@@ -103,30 +110,18 @@ namespace graphdiff {
         log("load vertex graph.");
         load_vertex_graph(vN, vM, vgraph, vrgraph, vv2l);
         log("load vertex graph end.");
-        fprintf(stderr, "load vertex graph end1.");
         if (egraph.size() != vgraph.size()) log("egraph.size:%d, vgraph.size:%d", egraph.size(), vgraph.size())
-        fprintf(stderr, "load vertex graph end2.");
         for (size_t vid = 0; vid < egraph.size(); ++vid) {
             if (!set_diff(egraph[vid], vgraph[vid])) log("vid:%d neighbors present difference.")
         }
-        fprintf(stderr, "load vertex graph end3.");
         if (!vec_diff(ev2l, vv2l)) log("level present difference.")
-        fprintf(stderr, "load vertex graph end4.");
-        fflush(stdout);
-        fflush(stderr);
+
         vvrgraph.resize(vrgraph.size());
-        size_t edgenum=0;
-        for (size_t vid = 0; vid < vrgraph.size(); ++vid) {
-            for (size_t i = 0; i < vrgraph[vid].size(); ++i) {
-//                if (vrgraph[vid][i] >= vvrgraph.size()||vrgraph[vid][i] <0) {
-//                    printf("vrgraph[vid][i]:%d vvrgraph.size:%d", vrgraph[vid][i], vvrgraph.size());
-//                } else {
-//                    vvrgraph[vrgraph[vid][i]].push_back(vid);
-//                }
-                edgenum++;
-            }
-        }
-        printf("edgenum:%d\n",edgenum);
+//        for (size_t vid = 0; vid < vrgraph.size(); ++vid) {
+//            for (size_t i = 0; i < vrgraph[vid].size(); ++i) {
+//                vvrgraph[vrgraph[vid][i]].push_back(vid);
+//            }
+//        }
 //
 //        if (vgraph.size() != vvrgraph.size()) log("inneib.size and ouneib.size presents difference.")
 //        for (size_t vid = 0; vid < vgraph.size(); ++vid) {

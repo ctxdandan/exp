@@ -23,11 +23,11 @@ int main() {
 //    dataconversion::convertchartobinarydata();
 //    scc::test();
 //    level_decide::test();
-//    butterfly::TOLIndexQuery();
-//    butterfly::validation();
+    butterfly::TOLIndexQuery();
+    butterfly::validation();
 //    setdifftest();
 //    daggenerator::test();
-    graphdiff::graphdiff();
+//    graphdiff::graphdiff();
 
 
     return 0;
