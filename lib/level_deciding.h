@@ -43,10 +43,10 @@ namespace level_decide {
             log("file not found.");
             return;
         }
-//        fread(&n, sizeof(int), 1, fp);
-//        fread(&m, sizeof(int), 1, fp);
-        n=12407621;
-        m=13857091;
+        fread(&n, sizeof(int), 1, fp);
+        fread(&m, sizeof(int), 1, fp);
+//        n=12407621;
+//        m=13857091;
 
         graph.resize(n);
         rgraph.resize(n);
@@ -73,22 +73,26 @@ namespace level_decide {
     }
 
     void decide_lvl() {
+        log("start deciding level")
         //construct reverse Index
-        map<long long, set<int>> rindex;
+        log("construct reverse index")
+        map<long long, vector<int> > rindex;
         for (int i = 0; i < n; i++) {
-            rindex[vertexes[i].degree_mul].insert(i);
+            rindex[vertexes[i].degree_mul].push_back(i);
         }
-
+        log("finish construct reverse index and start inital level vertex")
         int level = 0;
-        for (map<long long, set<int>>::reverse_iterator deg_mul = rindex.rbegin(); deg_mul != rindex.rend(); ++deg_mul) {
-            for (set<int>::iterator vid = deg_mul->second.begin(); vid != deg_mul->second.end(); ++vid) {
+        for (map<long long, vector<int> >::reverse_iterator deg_mul = rindex.rbegin(); deg_mul != rindex.rend(); ++deg_mul) {
+            for (vector<int>::iterator vid = deg_mul->second.begin(); vid != deg_mul->second.end(); ++vid) {
                 vertexes[*vid].level = level;
                 level++;
             }
         }
+        log("finish deciding level")
     }
 
-    void output_for_butterfly(string path) {
+    void output_for_butterfly(const char * path) {
+        log("start output_for_butterfly")
         ofstream ofs(path);
         if (!ofs) {
             log("open file failed.");
@@ -105,9 +109,11 @@ namespace level_decide {
         }
         ofs << endl;
         ofs.close();
+        log("finish output_for_butterfly")
     }
 
-    void output_for_dist(string path) {
+    void output_for_dist(const char * path) {
+        log("start output_for_dist")
         ofstream ofs(path);
         if (!ofs) {
             log("open file failed.");
@@ -125,21 +131,22 @@ namespace level_decide {
             ofs << endl;
         }
         ofs.close();
+        log("finish output_for_dist")
     }
 
     void test() {//5.55s
 //        load_graph("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG");
         //DAG 7245617 vertexes and 7314324 Edges
 //        load_graph2("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG.csv.bin");
-        load_graph2("out.twitter_mpi_1.DAG.bin");
+        load_graph2("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.bin");
         multi_degree();
         decide_lvl();
 //        output_for_butterfly("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
 //        output_for_dist("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_vertexfmt");
 //        output_for_butterfly("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
 //        output_for_dist("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_vertexfmt");
-        output_for_butterfly("out.twitter_mpi_1.DAG.lvl.edgefmt");
-        output_for_dist("out.twitter_mpi_1.DAG.lvl.vertexfmt");
+        output_for_butterfly("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.lvl.bin");
+        output_for_dist("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.vertex.lvl.bin");
     }
 }
 

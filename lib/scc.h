@@ -11,15 +11,10 @@ using namespace std;
 
 namespace scc {
     struct vertex {
-        vertex() {
-            dfn = 0;
-            low = 0;
-            inStack = false;
-        }
-
-        int dfn = 0;
-        int low = 0;
-        bool inStack = false;
+        vertex() :dfn(0),low(0),inStack(false){}
+        int dfn;
+        int low;
+        bool inStack;
         int newid;
     };
 
@@ -243,11 +238,6 @@ namespace scc {
         if (feof(fin)) log ("End-of-File reached.");
         fclose(fin);
 
-        vertexes.shrink_to_fit();
-        edges.shrink_to_fit();
-        for(int i=0;i<n;i++){
-            edges[i].shrink_to_fit();
-        }
         log("reading file consumed %f seconds",get_current_time()-start_time)
     }
 

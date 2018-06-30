@@ -30,13 +30,11 @@ namespace daggenerator {
         set<size_t> ou_neibs;
     } vertex;
     template<typename T1, typename T2>
-    struct tp2 {
+    struct tuple2 {
         T1 e1;
         T2 e2;
     };
 
-    template<typename T1, typename T2>
-    using tuple2=tp2<T1, T2>;
 
     /**
      * algorithm to distribute n vertexes to tl levels,
@@ -49,14 +47,14 @@ namespace daggenerator {
      * @param tl
      * @return
      */
-    vector<vector<vertex>> distribute_lvls(size_t n, size_t tl) {
+    vector<vector<vertex> > distribute_lvls(size_t n, size_t tl) {
         //first, assign level_size for each level
         vector<size_t> level_size(tl, 1);
         for (size_t total = tl; total < n; ++total) {
             level_size[rand() % tl]++;
         }
         //second, assign vertex for each level
-        vector<vector<vertex>> lvl_vertexes(tl);
+        vector<vector<vertex> > lvl_vertexes(tl);
         for (size_t vid = 0; vid < n; ++vid) {
             size_t tlevel = rand() % tl;
             while (level_size[tlevel] == lvl_vertexes[tlevel].size()) {
@@ -74,8 +72,8 @@ namespace daggenerator {
      * @param lvl_vertexes
      * @return
      */
-    vector<tuple2<size_t, size_t>> level_idx(const vector<vector<vertex>> &lvl_vertexes) {
-        vector<tuple2<size_t, size_t>> index;
+    vector<tuple2<size_t, size_t> > level_idx(const vector<vector<vertex> > &lvl_vertexes) {
+        vector<tuple2<size_t, size_t> > index;
         for (size_t tlevel = 0; tlevel < lvl_vertexes.size(); ++tlevel) {
             for (size_t i = 0; i < lvl_vertexes[tlevel].size(); ++i) {
                 index.resize(index.size() + 1);
@@ -100,10 +98,10 @@ namespace daggenerator {
      * @param tl total topological levels of this dag
      * @return DAG
      */
-    vector<vector<size_t>> gen(size_t n, size_t davg, size_t tl) {
+    vector<vector<size_t> > gen(size_t n, size_t davg, size_t tl) {
         //step 1. create n vertex and distribute them across tl levels
         srand(0);
-        vector<vector<vertex>> lvl_vertexes = distribute_lvls(n, tl);
+        vector<vector<vertex> > lvl_vertexes = distribute_lvls(n, tl);
 //        {//debug
 //            for(size_t i=0;i<lvl_vertexes.size();++i){
 //                printf("lvl:%d [",i);
@@ -115,7 +113,7 @@ namespace daggenerator {
 //        }
 
         //construct index for simplicity of computation
-        vector<tuple2<size_t, size_t>> index1 = level_idx(lvl_vertexes);
+        vector<tuple2<size_t, size_t> > index1 = level_idx(lvl_vertexes);
         vector<size_t> level_begin_idx(tl, 0);
         for (size_t tlevel = 1; tlevel < tl; ++tlevel) {
             level_begin_idx[tlevel] = level_begin_idx[tlevel - 1] + lvl_vertexes[tlevel - 1].size();
@@ -152,7 +150,7 @@ namespace daggenerator {
         }
 
 
-        vector<vector<size_t>> graph(n);
+        vector<vector<size_t> > graph(n);
         for (int i = 0; i < lvl_vertexes.size(); i++) {
             for (int j = 0; j < lvl_vertexes[i].size(); j++) {
                 vertex &v = lvl_vertexes[i][j];
@@ -171,7 +169,7 @@ namespace daggenerator {
     }
 
     void test() {
-        vector<vector<size_t>> graph = gen(10, 2, 5);
+        vector<vector<size_t> > graph = gen(10, 2, 5);
         outputDAG(graph);
     }
 }

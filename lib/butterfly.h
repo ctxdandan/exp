@@ -13,122 +13,141 @@ using namespace std;
 namespace butterfly {
     bool debug = false;
 
-    bool intersection(size_t src, vector<size_t> srcLout, size_t dst, vector<size_t> dstLin) {
-        srcLout.push_back(src);
-        dstLin.push_back(dst);
-        sort(srcLout.begin(), srcLout.end());
-        sort(dstLin.begin(), dstLin.end());
-        vector<size_t> result;
-        set_intersection(srcLout.begin(), srcLout.end(), dstLin.begin(), dstLin.end(),
-                         inserter(result, result.end()));
-        return !result.empty();
+    inline bool intersection(vector<size_t> &srcLout, vector<size_t> &dstLin) {
+        vector<size_t>::iterator b1 = srcLout.begin(), e1 = srcLout.end(), b2 = dstLin.begin(), e2 = dstLin.end();
+        for (; b1 != e1 && b2 != e2;) {
+            if (*b1 < *b2)b1++;
+            else if (*b1 > *b2)b2++;
+            else return true;
+        }
+        return false;
+//        vector<size_t> result;
+//        set_intersection(srcLout.begin(), srcLout.end(), dstLin.begin(), dstLin.end(),
+//                         inserter(result, result.end()));
+//        return !result.empty();
     }
 
-    void zjh_bfs_labeling(vector<vector<size_t>> &edge, size_t src, vector<size_t> &v2l, vector<vector<size_t>> &lin,
-                          vector<vector<size_t>> &lout) {
+    void zjh_bfs_labeling(vector<vector<size_t> > &edge, size_t src, vector<size_t> &v2l, vector<vector<size_t> > &lin,
+                          vector<vector<size_t> > &lout) {
         queue<size_t> Q;
         set<size_t> visited;
         for (int i = 0; i < edge[src].size(); i++) {
             if (v2l[src] < v2l[edge[src][i]]) {
-                if (debug) {
-                    log("%d add neib %d with level %d to queue.", src, edge[src][i], v2l[edge[src][i]])
-                }
                 Q.push(edge[src][i]);
-            } else {
-                if (debug) {
-                    log("%d neglect neib %d with level %d to queue.", src, edge[src][i], v2l[edge[src][i]])
-                }
             }
         }
-        if (debug) log("%d start process queue.", src);
         while (!Q.empty()) {
             size_t dst = Q.front();
             Q.pop();
             if (visited.insert(dst).second) {
-                if (debug) log("visiting [vid:%d, lvl:%d]", dst, v2l[dst])
-                if (!intersection(src, lout[src], dst, lin[dst])) {
-                    if (debug) {
-                        log("intersection empty.")
-                        printf("lout[");
-                        for (size_t i = 0; i < lout[src].size(); ++i) {
-                            printf("%d, ", lout[src][i]);
-                        }
-                        printf("]\n");
-
-                        printf("lin[");
-                        for (size_t i = 0; i < lin[src].size(); ++i) {
-                            printf("%d, ", lin[src][i]);
-                        }
-                        printf("]\n");
-                    }
+                if (!intersection(lout[src], lin[dst])) {
                     lin[dst].push_back(src);
-                    if (debug) log("[%d,%d] add [%d,%d] to lin", dst, v2l[dst], src, v2l[src]);
+                    sort(lin[dst].begin(), lin[dst].end());
                     for (size_t i = 0; i < edge[dst].size(); i++)
                         if (v2l[src] < v2l[edge[dst][i]]) {
-                            if (debug) {
-                                log("add neib %d with level %d to queue.", edge[dst][i], v2l[edge[dst][i]])
-                            }
                             Q.push(edge[dst][i]);
-                        } else {
-                            if (debug) {
-                                log("neglect neib %d with level %d to queue.", edge[dst][i], v2l[edge[dst][i]])
-                            }
                         }
-                } else {
-                    if (debug) {
-                        log("intersection not empty.")
-                        printf("lout[");
-                        for (size_t i = 0; i < lout[src].size(); ++i) {
-                            printf("%d, ", lout[src][i]);
-                        }
-                        printf("]\n");
-
-                        printf("lin[");
-                        for (size_t i = 0; i < lin[dst].size(); ++i) {
-                            printf("%d, ", lin[dst][i]);
-                        }
-                        printf("]\n");
-                    }
                 }
-            } else {
-                if (debug) log("visited [vid:%d, lvl:%d]", dst, v2l[dst])
             }
         }
 //        log("vertex visited by vid%d level%d:%d", src, v2l[src], visited.size());
     }
 
+
+    void
+    zjh_bfs_level_labeling(vector<vector<size_t> > &edge, size_t src, vector<size_t> &v2l, vector<vector<size_t> > &lin,
+                           vector<vector<size_t> > &lout) {
+        queue<size_t> Q;
+        set<size_t> visited;
+        size_t srclvl = v2l[src];
+        for (int i = 0; i < edge[src].size(); i++) {
+            if (srclvl < v2l[edge[src][i]]) {
+                Q.push(edge[src][i]);
+            }
+        }
+        while (!Q.empty()) {
+            size_t dst = Q.front();
+            Q.pop();
+            if (visited.insert(dst).second) {
+                if (!intersection(lout[src], lin[dst])) {
+                    lin[dst].push_back(srclvl);
+                    for (size_t i = 0; i < edge[dst].size(); i++)
+                        if (srclvl < v2l[edge[dst][i]]) {
+                            Q.push(edge[dst][i]);
+                        }
+                }
+            }
+        }
+//        log("vertex visited by vid%d level%d:%d", src, v2l[src], visited.size());
+    }
+
+    void
+    zjh_bfs_level_bitvisit_labeling(vector<vector<size_t> > &edge, size_t src, vector<size_t> &v2l,
+                                    vector<vector<size_t> > &lin,
+                                    vector<vector<size_t> > &lout, vector<bool> &visitedbitmap) {
+        queue<size_t> Q;
+        vector<size_t> visited;
+        size_t srclvl = v2l[src];
+        for (int i = 0; i < edge[src].size(); i++) {
+            if (srclvl < v2l[edge[src][i]]) {
+                Q.push(edge[src][i]);
+            }
+        }
+        while (!Q.empty()) {
+            size_t dst = Q.front();
+            Q.pop();
+            if (!visitedbitmap[dst]) {
+                visitedbitmap[dst] = true;
+                visited.push_back(dst);
+                if (!intersection(lout[src], lin[dst])) {
+                    lin[dst].push_back(srclvl);
+                    for (size_t i = 0; i < edge[dst].size(); i++)
+                        if (srclvl < v2l[edge[dst][i]]) {
+                            Q.push(edge[dst][i]);
+                        }
+                }
+            }
+        }
+        for (vector<size_t>::iterator it = visited.begin(); it != visited.end(); it++) {
+            visitedbitmap[*it] = false;
+        }
+    }
+
     size_t N, M;
-    vector<vector<size_t>> edges;
-    vector<vector<size_t>> redges;
-    vector<vector<size_t>> lin;
-    vector<vector<size_t>> lout;
+    vector<vector<size_t> > edges;
+    vector<vector<size_t> > redges;
+    vector<vector<size_t> > lin;
+    vector<vector<size_t> > lout;
     vector<size_t> v2l;
     vector<size_t> l2v;
     double cur_time = 0;
 
 
     void zjh_init() {
+        vector<bool> visitedbitmap(l2v.size(), false);
         for (size_t l = 0; l < l2v.size(); l++) {
             if (get_current_time() - cur_time > 1) {
                 log("start proceeding %d in time %f. outDegree:%d inDegree:%d", l, get_current_time(),
                     edges[l2v[l]].size(), redges[l2v[l]].size());
                 cur_time = get_current_time();
             }
-            zjh_bfs_labeling(edges, l2v[l], v2l, lin, lout);
-            if (l == 2411)debug = true;
-            zjh_bfs_labeling(redges, l2v[l], v2l, lout, lin);
-            debug = false;
+//            zjh_bfs_level_labeling(edges, l2v[l], v2l, lin, lout);
+//            zjh_bfs_level_labeling(redges, l2v[l], v2l, lout, lin);
+            zjh_bfs_level_bitvisit_labeling(edges, l2v[l], v2l, lin, lout, visitedbitmap);
+            zjh_bfs_level_bitvisit_labeling(redges, l2v[l], v2l, lout, lin, visitedbitmap);
+
         }
     }
 
     void TOLIndexQuery() {//4.55s
 //        fin.open("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tol1.dat");
 //        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
-        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
+//        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
 //        ifstream ifs("E:\\twitter_big\\out.twitter_mpi_1.DAG.lvl.edgefmt");
 //            ifstream ifs("edges_DAG_lvl_edgefmt");
 
 //        ifstream ifs("edges_DAG_lvl_edgefmt");
+        ifstream ifs("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.lvl.bin");
 
         if (!ifs) {
             log("file not found.")
