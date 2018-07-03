@@ -139,7 +139,7 @@ namespace butterfly {
         }
     }
 
-    void TOLIndexQuery() {//4.55s
+    void TOLIndexQuery(string ifpath) {//4.55s
 //        fin.open("C:\\Users\\Admin\\CLionProjects\\tol\\data\\tol1.dat");
 //        ifstream ifs("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
 //        ifstream ifs("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
@@ -147,10 +147,10 @@ namespace butterfly {
 //            ifstream ifs("edges_DAG_lvl_edgefmt");
 
 //        ifstream ifs("edges_DAG_lvl_edgefmt");
-        ifstream ifs("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.lvl.bin");
-
+//        ifstream ifs("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.lvl.bin");
+        ifstream ifs(ifpath.c_str());
         if (!ifs) {
-            log("file not found.")
+            log("file %s not found.", ifpath.c_str())
         }
         ifs >> N >> M;
         log("The Size of this Graph is (V:%d,E:%d)", N, M);
