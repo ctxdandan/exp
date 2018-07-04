@@ -11,7 +11,8 @@ using namespace std;
 
 namespace scc {
     struct vertex {
-        vertex() :dfn(0),low(0),inStack(false){}
+        vertex() : dfn(0), low(0), inStack(false) {}
+
         int dfn;
         int low;
         bool inStack;
@@ -204,29 +205,29 @@ namespace scc {
         log("loading Graph consumed %f seconds, the graph has %d vertexes and %d edges.", endtime - starttime, n, m);
     }
 
-    void loadgraph3(){
+    void loadgraph3() {
 //#define debug2
 #ifdef debug2
         FILE * fin=fopen("C:\\\\Users\\\\admin\\\\ClionProjects\\\\exp\\\\data\\\\testdata.bin","rb");
 #else
-        FILE * fin=fopen("out.twitter_mpi_1.bin","rb");
+        FILE *fin = fopen("out.twitter_mpi_1.bin", "rb");
 #endif
-        if(fin==NULL){
+        if (fin == NULL) {
             log("fin opened failed.")
         }
         int n = 52579682;
         long long int_nums;
-        fseek(fin,0,SEEK_END);
-        int_nums=ftell(fin)/4;
+        fseek(fin, 0, SEEK_END);
+        int_nums = ftell(fin) / 4;
         rewind(fin);
-        log("size of file is %lld 4bytes",int_nums)
+        log("size of file is %lld 4bytes", int_nums)
         int buffsize = 100000000;
         int *x = new int[buffsize];
-        size_t count=0;
+        size_t count = 0;
         vertexes.resize(n);
         edges.resize(n);
 
-        double start_time=get_current_time();
+        double start_time = get_current_time();
         while ((count = fread(x, sizeof(int), buffsize, fin)) > 0) {
             for (int i = 0; i < count; i += 2) {
                 edges[x[i] - 1].push_back(x[i + 1] - 1);
@@ -238,7 +239,44 @@ namespace scc {
         if (feof(fin)) log ("End-of-File reached.");
         fclose(fin);
 
-        log("reading file consumed %f seconds",get_current_time()-start_time)
+        log("reading file consumed %f seconds", get_current_time() - start_time)
+    }
+
+    void loadgraph4(string ifpath) {
+
+        FILE *fin = fopen(ifpath.c_str(), "rb");
+        if (fin == NULL) {
+            log("file %s open failed.", ifpath.c_str());
+            exit(-1);
+        }
+
+
+
+        /* file input format
+         * (the vertex id starts from 0)
+         * N M
+         * src dst
+         * src dst
+         * src dst
+         */
+
+        double start_time = get_current_time();
+        int N, M;
+        fread(&N, sizeof(N), 1, fin);
+        fread(&M, sizeof(M), 1, fin);
+        vertexes.resize(N);
+        edges.resize(M);
+
+        int src, dst;
+        for (int i = 0; i < M; ++i) {
+            fread(&src, sizeof(src), 1, fin);
+            fread(&dst, sizeof(dst), 1, fin);
+
+            edges[src].push_back(dst);
+        }
+
+        log("reading file consumed %f seconds", get_current_time() - start_time)
+        fclose(fin);
     }
 
     void findSCC() {
@@ -261,10 +299,10 @@ namespace scc {
         for (int i = 0; i < vertexes.size(); i++) {
             if (nid.find(vertexes[i].low) == nid.end()) {
                 nid[vertexes[i].low] = vid;
-                vertexes[i].newid=vid;
+                vertexes[i].newid = vid;
                 vid++;
-            }else{
-                vertexes[i].newid=nid[vertexes[i].low];
+            } else {
+                vertexes[i].newid = nid[vertexes[i].low];
             }
         }
         int nn = nid.size(), nm = 0;
@@ -313,10 +351,10 @@ namespace scc {
         for (int i = 0; i < vertexes.size(); i++) {
             if (nid.find(vertexes[i].low) == nid.end()) {
                 nid[vertexes[i].low] = vid;
-                vertexes[i].newid=vid;
+                vertexes[i].newid = vid;
                 vid++;
-            }else{
-                vertexes[i].newid=nid[vertexes[i].low];
+            } else {
+                vertexes[i].newid = nid[vertexes[i].low];
             }
         }
         int nn = nid.size(), nm = 0;
@@ -341,16 +379,16 @@ namespace scc {
         //output DAG
         log("starting writing to file......")
         //E:\twitter_big\Twitter-dataset\data\edges_DAG.csv.bin
-        FILE * fp=fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG.csv.bin","wb");
+        FILE *fp = fopen("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG.csv.bin", "wb");
         if (fp == NULL) {
             log("file opened failed.");
-        } else{
-            fwrite(&nn, sizeof(int),1,fp);
-            fwrite(&nm, sizeof(int),1,fp);
+        } else {
+            fwrite(&nn, sizeof(int), 1, fp);
+            fwrite(&nm, sizeof(int), 1, fp);
             for (map<int, set<int> >::iterator src = graph.begin(); src != graph.end(); ++src) {
                 for (set<int>::iterator dst = src->second.begin(); dst != src->second.end(); ++dst) {
-                    fwrite(&(src->first), sizeof(int),1,fp);
-                    fwrite(&(*dst), sizeof(int),1,fp);
+                    fwrite(&(src->first), sizeof(int), 1, fp);
+                    fwrite(&(*dst), sizeof(int), 1, fp);
                 }
             }
         }
@@ -368,10 +406,10 @@ namespace scc {
         for (int i = 0; i < vertexes.size(); i++) {
             if (nid.find(vertexes[i].low) == nid.end()) {
                 nid[vertexes[i].low] = vid;
-                vertexes[i].newid=vid;
+                vertexes[i].newid = vid;
                 vid++;
-            }else{
-                vertexes[i].newid=nid[vertexes[i].low];
+            } else {
+                vertexes[i].newid = nid[vertexes[i].low];
             }
         }
         int nn = nid.size(), nm = 0;
@@ -396,16 +434,16 @@ namespace scc {
         //output DAG
         log("starting writing to file......")
         //E:\twitter_big\Twitter-dataset\data\edges_DAG.csv.bin
-        FILE * fp=fopen("out.twitter_mpi_1.DAG.bin","wb");
+        FILE *fp = fopen("out.twitter_mpi_1.DAG.bin", "wb");
         if (fp == NULL) {
             log("file opened failed.");
-        } else{
+        } else {
 //            fwrite(&nn, sizeof(int),1,fp);
 //            fwrite(&nm, sizeof(int),1,fp);
-            for(int src=0;src<graph.size();++src){
-                for (set<int>::iterator dst=graph[src].begin();dst!=graph[src].end();++dst){
-                    fwrite(&src, sizeof(int),1,fp);
-                    fwrite(&(*dst), sizeof(int),1,fp);
+            for (int src = 0; src < graph.size(); ++src) {
+                for (set<int>::iterator dst = graph[src].begin(); dst != graph[src].end(); ++dst) {
+                    fwrite(&src, sizeof(int), 1, fp);
+                    fwrite(&(*dst), sizeof(int), 1, fp);
                 }
             }
         }
@@ -415,14 +453,71 @@ namespace scc {
         log("dumpgraph finished in %f seconds.", endtime - starttime);
     }
 
-    int test() {
-        loadgraph3();
+    void dumpgraph4(string ofpath) {
+        double starttime = get_current_time();
+        //assign new vid
+        int vid = 0;
+        map<int, int> nid; //old id-->new id
+        for (int i = 0; i < vertexes.size(); i++) {
+            if (nid.find(vertexes[i].low) == nid.end()) {
+                nid[vertexes[i].low] = vid;
+                vertexes[i].newid = vid;
+                vid++;
+            } else {
+                vertexes[i].newid = nid[vertexes[i].low];
+            }
+        }
+        int nn = nid.size(), nm = 0;
+        nid.clear();
+        log("Assign new vid finished.")
+        //reconstruct DAG
+        vector<set<int> > graph;
+        graph.resize(nn);
+        for (int from = 0; from < edges.size(); ++from) {
+            for (int to = 0; to < edges[from].size(); ++to) {
+                int srcid = vertexes[from].newid;
+                int dstid = vertexes[edges[from][to]].newid;
+                if (srcid == dstid)continue;
+                graph[srcid].insert(dstid);
+            }
+        }
+        log("reconstruct DAG finished.")
+        for (vector<set<int> >::iterator src = graph.begin(); src != graph.end(); ++src) {
+            nm += src->size();
+        }
+        log("Anaylysis Finished. There are %d conponents, and the new graph has %d edges.", nn, nm);
+        //output DAG
+        log("starting writing to file......")
+        //E:\twitter_big\Twitter-dataset\data\edges_DAG.csv.bin
+        FILE *fp = fopen(ofpath.c_str(), "wb");
+        if (fp == NULL) {
+            log("file opened failed.");
+        } else {
+            fwrite(&nn, sizeof(int),1,fp);
+            fwrite(&nm, sizeof(int),1,fp);
+            for (int src = 0; src < graph.size(); ++src) {
+                for (set<int>::iterator dst = graph[src].begin(); dst != graph[src].end(); ++dst) {
+                    fwrite(&src, sizeof(int), 1, fp);
+                    fwrite(&(*dst), sizeof(int), 1, fp);
+                }
+            }
+        }
+        fclose(fp);
+        log("finish writing to file.");
+        double endtime = get_current_time();
+        log("dumpgraph finished in %f seconds.", endtime - starttime);
+    }
+
+    int test(string ifpath, string ofpath) {
+        loadgraph4(ifpath);
+//        loadgraph3();
 //        loadgraph2();
 //        loadgraph1();
         findSCC();
-//        dumpgraph1();
-        dumpgraph3();
+
+//        dumpgraph3();
 //        dumpgraph2();
+//        dumpgraph1();
 //        example1();
         return 0;
     }
