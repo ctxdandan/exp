@@ -1,6 +1,7 @@
 #include "lib/DAGgenerator.h"
 #include "lib/header.h"
 #include "lib/butterfly.h"
+#include "lib/preprocess.h"
 #include "lib/scc.h"
 #include "lib/level_deciding.h"
 #include "lib/DataConversion.h"
@@ -61,10 +62,19 @@ int main(int argc, char *argv[]) {
          << "ofpath: " << ofpath << endl;
 
     if (alg == "tol") {
-        if(ifpath.size()==0)
+        if (ifpath.size() == 0)
             usage(-1);
         butterfly::TOLIndexQuery(ifpath);
+    } else if (alg == "pre") {
+        if (ifpath.size() == 0 || ofpath.size() == 0) {
+            fprintf(stderr, "missing argument: ifpath and ofpath\n");
+            usage(-1);
+        }
+        preprocess::preprocess(ifpath, ofpath);
     }
+
+
+
 
 //    dataconversion::convertchartobinarydata();
 //    scc::test();
