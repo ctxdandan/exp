@@ -515,6 +515,8 @@ namespace scc {
 //        loadgraph1();
         findSCC();
 
+
+        dumpgraph4(ofpath);
 //        dumpgraph3();
 //        dumpgraph2();
 //        dumpgraph1();
