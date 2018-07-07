@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
             usage(-1);
         }
         scc::scc(ifpath, ofpath);
+
     }
 
 

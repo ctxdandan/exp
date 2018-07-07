@@ -16,7 +16,7 @@ namespace daggenerator {
     void outputDAG(vector<vector<size_t> > &graph) {
         printf("GRAPH:\n");
         for (size_t i = 0; i < graph.size(); ++i) {
-            printf("%d->[", i);
+            printf("%lu->[", i);
             for (size_t j = 0; j < graph[i].size(); ++j) {
                 printf("%d,", graph[i][j]);
             }
