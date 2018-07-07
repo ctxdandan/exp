@@ -493,8 +493,8 @@ namespace scc {
         if (fp == NULL) {
             log("file opened failed.");
         } else {
-            fwrite(&nn, sizeof(int),1,fp);
-            fwrite(&nm, sizeof(int),1,fp);
+            fwrite(&nn, sizeof(int), 1, fp);
+            fwrite(&nm, sizeof(int), 1, fp);
             for (int src = 0; src < graph.size(); ++src) {
                 for (set<int>::iterator dst = graph[src].begin(); dst != graph[src].end(); ++dst) {
                     fwrite(&src, sizeof(int), 1, fp);
@@ -508,7 +508,7 @@ namespace scc {
         log("dumpgraph finished in %f seconds.", endtime - starttime);
     }
 
-    int test(string ifpath, string ofpath) {
+    int scc(string ifpath, string ofpath) {
         loadgraph4(ifpath);
 //        loadgraph3();
 //        loadgraph2();

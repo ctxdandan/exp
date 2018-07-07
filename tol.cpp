@@ -18,7 +18,7 @@ using namespace std;
 inline void usage(int exit_value = 0) {
     cerr << "exp help" << endl << endl;
     cerr << "-h\tshow help" << endl;
-    cerr << "-a\tselect algorithm:tol(tol index alg), scc, etc.." << endl;
+    cerr << "-a\tselect algorithm:tol(tol index alg), scc, pre, etc.." << endl;
     cerr << "-i\tinput file" << endl;
     cerr << "-o\toutput file" << endl;
     exit(exit_value);
@@ -71,13 +71,19 @@ int main(int argc, char *argv[]) {
             usage(-1);
         }
         preprocess::preprocess(ifpath, ofpath);
+    } else if (alg == "scc") {
+        if (ifpath.size() == 0 || ofpath.size() == 0) {
+            fprintf(stderr, "missing argument: ifpath and ofpath\n");
+            usage(-1);
+        }
+        scc::scc(ifpath, ofpath);
     }
 
 
 
 
 //    dataconversion::convertchartobinarydata();
-//    scc::test();
+//    scc::scc();
 //    level_decide::test();
 //    butterfly::TOLIndexQuery();
 //    butterfly::validation();
