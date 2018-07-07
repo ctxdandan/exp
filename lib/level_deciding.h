@@ -45,8 +45,6 @@ namespace level_decide {
         }
         fread(&n, sizeof(int), 1, fp);
         fread(&m, sizeof(int), 1, fp);
-//        n=12407621;
-//        m=13857091;
 
         graph.resize(n);
         rgraph.resize(n);
@@ -91,11 +89,11 @@ namespace level_decide {
         log("finish deciding level")
     }
 
-    void output_for_butterfly(const char * path) {
+    void output_for_butterfly(string path) {
         log("start output_for_butterfly")
-        ofstream ofs(path);
+        ofstream ofs(path.c_str());
         if (!ofs) {
-            log("open file failed.");
+            log("open file %s failed.",path.c_str());
         }
         ofs << n << " " << m << endl;
         for (int srcid = 0; srcid < graph.size(); srcid++) {
@@ -112,11 +110,11 @@ namespace level_decide {
         log("finish output_for_butterfly")
     }
 
-    void output_for_dist(const char * path) {
+    void output_for_dist(string path) {
         log("start output_for_dist")
-        ofstream ofs(path);
+        ofstream ofs(path.c_str());
         if (!ofs) {
-            log("open file failed.");
+            log("open file %s failed.",path.c_str());
         }
         for (int i = 0; i < vertexes.size(); i++) {
             ofs << i << "\t" << vertexes[i].level << " ";
@@ -134,19 +132,14 @@ namespace level_decide {
         log("finish output_for_dist")
     }
 
-    void test() {//5.55s
-//        load_graph("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG");
-        //DAG 7245617 vertexes and 7314324 Edges
-//        load_graph2("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG.csv.bin");
-        load_graph2("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.bin");
+    void test(string ifpath,string ofprefix) {//5.55s
+        load_graph2(ifpath.c_str());
         multi_degree();
         decide_lvl();
-//        output_for_butterfly("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_edgefmt");
-//        output_for_dist("C:\\Users\\Admin\\CLionProjects\\exp\\data\\twitter_socialDAG_lvl_vertexfmt");
-//        output_for_butterfly("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_edgefmt");
-//        output_for_dist("E:\\twitter_big\\Twitter-dataset\\data\\edges_DAG_lvl_vertexfmt");
-        output_for_butterfly("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.edge.lvl.bin");
-        output_for_dist("E:/WEBSPAM-UK2007/graph/uk-2007-05.dag.vertex.lvl.bin");
+        string butterflyformat=".edgefmt";
+        string distformat=".vertexfmt";
+        output_for_butterfly(ofprefix+".edgefmt");
+        output_for_dist(ofprefix+".vertexfmt");
     }
 }
 

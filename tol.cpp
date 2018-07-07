@@ -18,9 +18,9 @@ using namespace std;
 inline void usage(int exit_value = 0) {
     cerr << "exp help" << endl << endl;
     cerr << "-h\tshow help" << endl;
-    cerr << "-a\tselect algorithm:tol(tol index alg), scc, pre, etc.." << endl;
+    cerr << "-a\tselect algorithm:tol(tol index alg), scc, pre, lvl, etc.." << endl;
     cerr << "-i\tinput file" << endl;
-    cerr << "-o\toutput file" << endl;
+    cerr << "-o\toutput file(or prefix)" << endl;
     exit(exit_value);
 }
 
@@ -77,7 +77,14 @@ int main(int argc, char *argv[]) {
             usage(-1);
         }
         scc::scc(ifpath, ofpath);
-
+    } else if (alg == "lvl") {
+        if (ifpath.size() == 0 || ofpath.size() == 0) {
+            fprintf(stderr, "missing argument: ifpath and ofpath\n");
+            usage(-1);
+        }
+        level_decide::test(ifpath,ofpath);
+    } else{
+        usage(-1);
     }
 
 
